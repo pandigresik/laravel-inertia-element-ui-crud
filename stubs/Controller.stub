@@ -1,0 +1,70 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Requests\{{entityName}}\Store{{entityName}}Request;
+use App\Http\Requests\{{entityName}}\Update{{entityName}}Request;
+use App\Models\{{modelName}};
+use Illuminate\Support\Facades\Redirect;
+use Inertia\Inertia;
+
+class {{entityName}}Controller extends Controller
+{
+    public function index()
+    {
+        $search = \request('q');
+        ${{entityNamePluralLowerCase}} = {{modelName}}::query()
+            ->when($search, function ($query) use ($search) {
+                $query->orWhere('id', 'like', '%'.$search.'%'){{searchFields}};
+            })
+            ->orderBy(\request('sort', 'id'),$this->filterOrderParameters())
+            ->paginate(\request('r', 20),['*'],'page',\request('page', 1));
+
+        return Inertia::render('{{entityNamePluralUcFirst}}/List', [
+            'records' => ${{entityNamePluralLowerCase}},
+            'searched' => $search
+        ]);
+    }
+
+    public function create()
+    {
+        $entity = array_fill_keys((new {{modelName}})->getFillable(), null);
+        return Inertia::render('{{entityNamePluralUcFirst}}/Create',[
+            'record' => $entity
+        ]);
+    }
+
+    public function store(Store{{entityName}}Request $request)
+    {
+        ${{entityNameSingularLowerCase}} = {{modelName}}::create($request->all());
+
+        if(${{entityNameSingularLowerCase}})
+        {
+            return Redirect::route('{{entityNamePluralLowerCase}}.index')->with('success', '{{entityName}} created.');
+        }
+        return Redirect::route('{{entityNamePluralLowerCase}}.index')->with('error', 'Unable to create.');
+    }
+
+    public function edit($id)
+    {
+        ${{entityNameSingularLowerCase}} = {{modelName}}::findOrFail($id);
+        return Inertia::render('{{entityNamePluralUcFirst}}/Update', [
+            'record' => ${{entityNameSingularLowerCase}}
+        ]);
+    }
+
+    public function update(Update{{entityName}}Request $request, $id)
+    {
+        ${{entityNameSingularLowerCase}} = {{modelName}}::findOrFail($id);
+        ${{entityNameSingularLowerCase}}->update($request->all());
+
+        return Redirect::route('{{entityNamePluralLowerCase}}.index')->with('success', 'Record updated.');
+    }
+
+    public function destroy($id)
+    {
+        {{modelName}}::destroy($id);
+
+        return Redirect::route('{{entityNamePluralLowerCase}}.index')->with('success', 'Record removed.');
+    }
+}

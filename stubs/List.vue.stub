@@ -1,0 +1,74 @@
+<template>
+    <app-layout>
+        <template #header>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                {{entityNamePluralUcFirst}}
+                <el-button class="float-right" size="small" @click="create">Add</el-button>
+            </h2>
+        </template>
+
+        <div class="py-12">
+            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
+                    <el-crud-list :records="records"
+                          :searchText="searched"
+                          :indexRoute="'{{entityNamePluralLowerCase}}.index'"
+                          :updateRoute="'{{entityNamePluralLowerCase}}.edit'"
+                          :deleteRoute="'{{entityNamePluralLowerCase}}.destroy'"
+                          :columns="columns"
+                    >
+                    </el-crud-list>
+                </div>
+            </div>
+        </div>
+    </app-layout>
+</template>
+
+<script>
+import AppLayout from '@/Layouts/AppLayout'
+import { ElCrudList } from "laravel-inertia-element-ui-crud-vue3";
+
+export default {
+    components: {
+        AppLayout,
+        ElCrudList
+    },
+    props: ['records','searched','flash','success','error'],
+    data(){
+        return {
+            columns: {{listFields}}
+        }
+    },
+    mounted() {
+        this.handleNotifications();
+    },
+    methods: {
+        handleNotifications(){
+            if(this.success){
+                this.$message({
+                    showClose: true,
+                    message: this.success,
+                    type: 'success'
+                });
+            }
+            if(this.error){
+                this.$message({
+                    showClose: true,
+                    message: this.error,
+                    type: 'error'
+                });
+            }
+
+            if(this.flash && this.flash.message){
+                this.$message({
+                    showClose: true,
+                    message: this.flash.message,
+                });
+            }
+        },
+        create(){
+            this.$inertia.get(route('{{entityNamePluralLowerCase}}.create'))
+        }
+    }
+}
+</script>

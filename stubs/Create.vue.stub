@@ -1,0 +1,73 @@
+<template>
+    <app-layout>
+        <template #header>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                {{entityNamePluralUcFirst}}
+            </h2>
+        </template>
+
+        <div class="py-6">
+            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
+                    <el-crud-form
+                        :index-route="'{{entityNamePluralLowerCase}}.index'"
+                        :add-route="'{{entityNamePluralLowerCase}}.store'"
+                        :update-route="'{{entityNamePluralLowerCase}}.update'"
+                        :errors="errors"
+                        :record="record"
+                        :fields="fields"
+                    ></el-crud-form>
+                </div>
+            </div>
+        </div>
+    </app-layout>
+</template>
+
+<script>
+import AppLayout from '@/Layouts/AppLayout'
+import { ElCrudForm } from "laravel-inertia-element-ui-crud-vue3";
+
+export default {
+    components: {
+        AppLayout,
+        ElCrudForm
+    },
+    props: ['record','flash','success','error','errors'],
+    data(){
+        return {
+            fields: {{createFields}}
+        }
+    },
+    mounted() {
+        this.handleNotifications();
+    },
+    methods: {
+        handleNotifications(){
+            if(this.success){
+                this.$message({
+                    showClose: true,
+                    message: this.success,
+                    type: 'success'
+                });
+            }
+            if(this.error){
+                this.$message({
+                    showClose: true,
+                    message: this.error,
+                    type: 'error'
+                });
+            }
+
+            if(this.flash && this.flash.message){
+                this.$message({
+                    showClose: true,
+                    message: this.flash.message,
+                });
+            }
+        },
+        create(){
+            this.$inertia.get(route('{{entityNamePluralLowerCase}}.create'))
+        }
+    }
+}
+</script>
