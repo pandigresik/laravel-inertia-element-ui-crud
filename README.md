@@ -1,7 +1,7 @@
 # element-ui crud generator
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/xt/element-ui-crud.svg?style=flat-square)](https://packagist.org/packages/xt/element-ui-crud)
-[![Total Downloads](https://img.shields.io/packagist/dt/xt/element-ui-crud.svg?style=flat-square)](https://packagist.org/packages/xt/element-ui-crud)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/xt/laravel-inertia-element-ui-crud.svg?style=flat-square)](https://packagist.org/packages/xt/laravel-inertia-element-ui-crud)
+[![Total Downloads](https://img.shields.io/packagist/dt/xt/laravel-inertia-element-ui-crud.svg?style=flat-square)](https://packagist.org/packages/xt/laravel-inertia-element-ui-crud)
 
 Generate CRUD for Element-UI (Vue 3) and Inertia Js.
 
@@ -18,7 +18,7 @@ This package will generate files to perform CRUD, based on the database table sc
 You can install the package via composer:
 
 ```bash
-composer require xt/element-ui-crud
+composer require xt/laravel-inertia-element-ui-crud
 ```
 
 Install npm package:
