@@ -7,6 +7,8 @@ Generate CRUD for Element-UI (Vue 3) and Inertia Js.
 
 This package will generate files to perform CRUD, based on the database table schema. It will generate all the fields in list, create and update form pages.
 
+[Vue Plugin](https://www.npmjs.com/package/laravel-inertia-element-ui-crud-vue3)
+
 ## Features
 - Generate list, create and update view pages
 - Generate controller which perform insert, update and delete
@@ -25,6 +27,25 @@ Install npm package:
 
 ```bash
 npm install laravel-inertia-element-ui-crud-vue3 --save
+```
+
+## Add code
+
+add following function to the app/Http/Controllers/Controller.php
+
+```php
+function filterOrderParameters(){
+    $sort_order = \request('order', 'd');
+    if ($sort_order == ''){
+        $sort_order = 'd';
+    }
+    if ($sort_order == 'a'){
+        $sort_order = 'asc';
+    } else {
+        $sort_order = 'desc';
+    }
+    return $sort_order;
+}
 ```
 
 ## Usage
