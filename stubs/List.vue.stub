@@ -1,5 +1,81 @@
+<script setup>
+import BreezeAuthenticatedLayout from '@/Layouts/Authenticated.vue';
+import { ElCrudList } from "laravel-inertia-element-ui-crud-vue3";
+import { ElMessage } from 'element-plus'
+import { onMounted, onUpdated } from "vue";
+import { Inertia } from '@inertiajs/inertia'
+
+const props = defineProps({
+    errors: {
+        type: Object,
+        default: () => {
+            return {};
+        }
+    },
+    record: {
+        type: Object,
+        default: () => {
+            return {};
+        }
+    },
+    records: {
+        type: Object,
+        default: () => {
+            return {};
+        }
+    },
+    searched: String,
+    success: String,
+    error: String,
+    flash: {
+        type: Object,
+        default: () => {
+            return {};
+        }
+    },
+})
+
+
+const columns = {{listFields}};
+
+onMounted(() => {
+    handleNotifications();
+});
+
+onUpdated(() => {
+    handleNotifications();
+});
+
+function handleNotifications(){
+    if(props.success){
+        ElMessage({
+            showClose: true,
+            message: props.success,
+            type: 'success'
+        });
+    }
+    if(props.error){
+        ElMessage({
+            showClose: true,
+            message: props.error,
+            type: 'error'
+        });
+    }
+
+    if(props.flash && props.flash.message){
+        ElMessage({
+            showClose: true,
+            message: props.flash.message,
+        });
+    }
+}
+function create(){
+    Inertia.get(route('{{entityNamePluralLowerCase}}.create'));
+}
+
+</script>
 <template>
-    <app-layout>
+    <BreezeAuthenticatedLayout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 {{entityNamePluralUcFirst}}
@@ -21,54 +97,5 @@
                 </div>
             </div>
         </div>
-    </app-layout>
+    </BreezeAuthenticatedLayout>
 </template>
-
-<script>
-import AppLayout from '@/Layouts/AppLayout'
-import { ElCrudList } from "laravel-inertia-element-ui-crud-vue3";
-
-export default {
-    components: {
-        AppLayout,
-        ElCrudList
-    },
-    props: ['records','searched','flash','success','error'],
-    data(){
-        return {
-            columns: {{listFields}}
-        }
-    },
-    mounted() {
-        this.handleNotifications();
-    },
-    methods: {
-        handleNotifications(){
-            if(this.success){
-                this.$message({
-                    showClose: true,
-                    message: this.success,
-                    type: 'success'
-                });
-            }
-            if(this.error){
-                this.$message({
-                    showClose: true,
-                    message: this.error,
-                    type: 'error'
-                });
-            }
-
-            if(this.flash && this.flash.message){
-                this.$message({
-                    showClose: true,
-                    message: this.flash.message,
-                });
-            }
-        },
-        create(){
-            this.$inertia.get(route('{{entityNamePluralLowerCase}}.create'))
-        }
-    }
-}
-</script>
