@@ -96,7 +96,15 @@ make sure controller name without including controller for example `User` which 
 
 Example:
 ```bash
+#This will generator view file for Jetstream
+
 php artisan crud:generator User User
+```
+or
+```bash
+#This will generator view file for breeze
+
+php artisan crud:generator User User --template=breeze
 ```
 
 
