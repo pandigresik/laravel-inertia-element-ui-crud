@@ -1,11 +1,11 @@
 <script setup>
 import { Head } from '@inertiajs/inertia-vue3';
-import BreezeAuthenticatedLayout from '@/Layouts/Authenticated.vue';
-import { ElCrudForm } from "laravel-inertia-element-ui-crud-vue3";
-import { onMounted, onUpdated } from "vue";
-import { genFileId, ElMessage } from 'element-plus'
+import {{LayoutVar}} from '@/Layouts/{{LayoutFile}}.vue';
+import ElCrudForm from "@/CURD/Form.vue"
+import { inject, onMounted, onUpdated } from "vue";
+import { ElMessage } from 'element-plus'
 import { Inertia } from '@inertiajs/inertia'
-
+const route = inject('appRoute');
 const props = defineProps({
     errors: {
         type: Object,
@@ -76,7 +76,7 @@ function create(){
 </script>
 
 <template>
-    <app-layout>
+    <{{LayoutVar}} title="Create {{entityNamePluralUcFirst}}">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 {{entityNamePluralUcFirst}}
@@ -97,5 +97,5 @@ function create(){
                 </div>
             </div>
         </div>
-    </app-layout>
+    </{{LayoutVar}}>
 </template>

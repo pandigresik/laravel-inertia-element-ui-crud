@@ -1,10 +1,10 @@
 <script setup>
-import BreezeAuthenticatedLayout from '@/Layouts/Authenticated.vue';
-import { ElCrudList } from "laravel-inertia-element-ui-crud-vue3";
+import {{LayoutVar}} from '@/Layouts/{{LayoutFile}}.vue';
+import ElCrudList from "@/CURD/List.vue";
 import { ElMessage } from 'element-plus'
-import { onMounted, onUpdated } from "vue";
+import { inject, onMounted, onUpdated } from "vue";
 import { Inertia } from '@inertiajs/inertia'
-
+const route = inject('appRoute');
 const props = defineProps({
     errors: {
         type: Object,
@@ -68,6 +68,22 @@ function handleNotifications(){
             message: props.flash.message,
         });
     }
+
+    if(props.flash && props.flash.success){
+        ElMessage({
+            showClose: true,
+            message: props.flash.success,
+            type: 'success'
+        });
+    }
+
+    if(props.flash && props.flash.error){
+        ElMessage({
+            showClose: true,
+            message: props.flash.error,
+            type: 'error'
+        });
+    }
 }
 function create(){
     Inertia.get(route('{{entityNamePluralLowerCase}}.create'));
@@ -75,7 +91,7 @@ function create(){
 
 </script>
 <template>
-    <BreezeAuthenticatedLayout>
+    <{{LayoutVar}} title="{{entityNamePluralUcFirst}}">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 {{entityNamePluralUcFirst}}
@@ -97,5 +113,5 @@ function create(){
                 </div>
             </div>
         </div>
-    </BreezeAuthenticatedLayout>
+    </{{LayoutVar}}>
 </template>
