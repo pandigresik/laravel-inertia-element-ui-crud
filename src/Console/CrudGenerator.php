@@ -16,7 +16,7 @@ class CrudGenerator extends Command
      * @var string
      */
     protected $signature = 'crud:generator
-    {name : Class (singular) for example User} {model : Model class}';
+    {name : Class (singular) for example User} {model : Model class}  {--t|template=jetstream : Template jetstream or breeze}';
 
     /**
      * The console command description.
@@ -45,8 +45,9 @@ class CrudGenerator extends Command
         $this->info('Generating files...');
 
         $name = $this->argument('name');
+        $template = $this->option('template');
 
-        $this->view($name);
+        $this->view($name, $template);
         $this->controller($name);
         $this->request($name);
 
@@ -96,7 +97,7 @@ class CrudGenerator extends Command
         return file_get_contents($stubFilePath);
     }
 
-    protected function view($name){
+    protected function view($name, $template){
         $columns = $this->getFields();
         $listFields = [
             [
@@ -121,15 +122,25 @@ class CrudGenerator extends Command
                 'type' => $column['type'],
             ];
         }
+        $layoutVar = 'AppLayout';
+        $layoutFile = 'AppLayout';
+        if (strtolower($template) == 'breeze'){
+            $layoutFile = 'Authenticated';
+            $layoutVar = 'BreezeAuthenticatedLayout';
+        }
 
         $entityNamePluralUcFirst = Str::ucfirst(Str::plural($name));
         $listTemplate = str_replace(
             [
+                '{{LayoutFile}}',
+                '{{LayoutVar}}',
                 '{{listFields}}',
                 '{{entityNamePluralLowerCase}}',
                 '{{entityNamePluralUcFirst}}',
             ],
             [
+                $layoutFile,
+                $layoutVar,
                 json_encode($listFields, JSON_PRETTY_PRINT),
                 strtolower(Str::plural($name)),
                 $entityNamePluralUcFirst,
@@ -139,11 +150,15 @@ class CrudGenerator extends Command
 
         $createTemplate = str_replace(
             [
+                '{{LayoutFile}}',
+                '{{LayoutVar}}',
                 '{{createFields}}',
                 '{{entityNamePluralLowerCase}}',
                 '{{entityNamePluralUcFirst}}',
             ],
             [
+                $layoutFile,
+                $layoutVar,
                 json_encode($fields, JSON_PRETTY_PRINT),
                 strtolower(Str::plural($name)),
                 $entityNamePluralUcFirst,
@@ -153,11 +168,15 @@ class CrudGenerator extends Command
 
         $updateTemplate = str_replace(
             [
+                '{{LayoutFile}}',
+                '{{LayoutVar}}',
                 '{{updateFields}}',
                 '{{entityNamePluralLowerCase}}',
                 '{{entityNamePluralUcFirst}}',
             ],
             [
+                $layoutFile,
+                $layoutVar,
                 json_encode($fields, JSON_PRETTY_PRINT),
                 strtolower(Str::plural($name)),
                 $entityNamePluralUcFirst,
