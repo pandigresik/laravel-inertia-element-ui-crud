@@ -15,7 +15,9 @@ class {{entityName}}Controller extends Controller
         $search = \request('q');
         ${{entityNamePluralLowerCase}} = {{modelName}}::query()
             ->when($search, function ($query) use ($search) {
-                $query->orWhere('id', 'like', '%'.$search.'%'){{searchFields}};
+                $query->where(function($qry) use ($search){
+                    $qry->orWhere('id', 'like', '%'.$search.'%'){{searchFields}};
+                });
             })
             ->orderBy(\request('sort', 'id'),$this->filterOrderParameters())
             ->paginate(\request('r', 20),['*'],'page',\request('page', 1));
@@ -36,7 +38,8 @@ class {{entityName}}Controller extends Controller
 
     public function store(Store{{entityName}}Request $request)
     {
-        ${{entityNameSingularLowerCase}} = {{modelName}}::create($request->all());
+        $entity = (new {{modelName}})->getFillable();
+        ${{entityNameSingularLowerCase}} = {{modelName}}::create($request->only($entity));
 
         if(${{entityNameSingularLowerCase}})
         {
@@ -55,8 +58,9 @@ class {{entityName}}Controller extends Controller
 
     public function update(Update{{entityName}}Request $request, $id)
     {
+        $entity = (new {{modelName}})->getFillable();
         ${{entityNameSingularLowerCase}} = {{modelName}}::findOrFail($id);
-        ${{entityNameSingularLowerCase}}->update($request->all());
+        ${{entityNameSingularLowerCase}}->update($request->only($entity));
 
         return Redirect::route('{{entityNamePluralLowerCase}}.index')->with('success', 'Record updated.');
     }
