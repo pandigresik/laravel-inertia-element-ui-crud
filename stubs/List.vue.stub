@@ -1,6 +1,6 @@
 <script setup>
 import {{LayoutVar}} from '@/Layouts/{{LayoutFile}}.vue';
-import ElCrudList from "@/CURD/List.vue";
+import { ElCrudList } from "laravel-inertia-element-ui-crud-vue3";
 import { ElMessage } from 'element-plus'
 import { inject, onMounted, onUpdated } from "vue";
 import { Inertia } from '@inertiajs/inertia'

@@ -1,7 +1,7 @@
 <script setup>
 import { Head } from '@inertiajs/inertia-vue3';
 import {{LayoutVar}} from '@/Layouts/{{LayoutFile}}.vue';
-import ElCrudForm from "@/CURD/Form.vue"
+import { ElCrudForm } from "laravel-inertia-element-ui-crud-vue3";
 import { inject, onMounted, onUpdated } from "vue";
 import { ElMessage } from 'element-plus'
 import { Inertia } from '@inertiajs/inertia'
