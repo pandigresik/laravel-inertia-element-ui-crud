@@ -125,8 +125,8 @@ class CrudGenerator extends Command
         $layoutVar = 'AppLayout';
         $layoutFile = 'AppLayout';
         if (strtolower($template) == 'breeze'){
-            $layoutFile = 'Authenticated';
-            $layoutVar = 'BreezeAuthenticatedLayout';
+            $layoutFile = 'AuthenticatedLayout';
+            $layoutVar = 'AuthenticatedLayout';
         }
 
         $entityNamePluralUcFirst = Str::ucfirst(Str::plural($name));
