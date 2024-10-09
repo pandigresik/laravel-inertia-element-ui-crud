@@ -2,11 +2,11 @@
 
 namespace XT\ElementUiCrud\Console;
 
+use Illuminate\Support\Str;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Artisan;
 
 class CrudGenerator extends Command
 {
@@ -100,27 +100,14 @@ class CrudGenerator extends Command
     protected function view($name, $template){
         $columns = $this->getFields();
         $listFields = [
-            [
-                'name' => 'id',
-                'title' => '#Id',
-                'sortable' => true,
-                'width' => '80px'
-            ]
+            [ 'name' => 'id', 'title' => '#Id', 'width' => '80px' ]
         ];
         $fields = [];
         foreach ($columns as $column){
             $displayName = Str::ucfirst(str_replace(['-','_'],[' ',' '],$column['name']));
-            $listFields[] = [
-                'name' => $column['name'],
-                'title' => $displayName,
-                'sortable' => true,
-            ];
+            $listFields[] = [ 'name' => $column['name'], 'title' => $displayName ];
 
-            $fields[] = [
-                'property' => $column['name'],
-                'label' => $displayName,
-                'type' => $column['type'],
-            ];
+            $fields[] = [ 'property' => $column['name'], 'label' => $displayName, 'type' => $column['type'] ];
         }
         $layoutVar = 'AppLayout';
         $layoutFile = 'AppLayout';

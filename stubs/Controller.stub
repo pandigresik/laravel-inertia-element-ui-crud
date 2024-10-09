@@ -38,8 +38,9 @@ class {{entityName}}Controller extends Controller
 
     public function store(Store{{entityName}}Request $request)
     {
-        $entity = (new {{modelName}})->getFillable();
-        ${{entityNameSingularLowerCase}} = {{modelName}}::create($request->only($entity));
+        $sanitized = $request->getSanitized();
+
+        ${{entityNameSingularLowerCase}} = {{modelName}}::create($sanitized);
 
         if(${{entityNameSingularLowerCase}})
         {
@@ -58,9 +59,10 @@ class {{entityName}}Controller extends Controller
 
     public function update(Update{{entityName}}Request $request, $id)
     {
-        $entity = (new {{modelName}})->getFillable();
+        $sanitized = $request->getSanitized();
+
         ${{entityNameSingularLowerCase}} = {{modelName}}::findOrFail($id);
-        ${{entityNameSingularLowerCase}}->update($request->only($entity));
+        ${{entityNameSingularLowerCase}}->update($sanitized);
 
         return Redirect::route('{{entityNamePluralLowerCase}}.index')->with('success', 'Record updated.');
     }

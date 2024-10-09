@@ -1,34 +1,11 @@
 <script setup>
-import { Head } from '@inertiajs/inertia-vue3';
 import {{LayoutVar}} from '@/Layouts/{{LayoutFile}}.vue';
 import { ElCrudForm } from "laravel-inertia-element-ui-crud-vue3";
-import { inject, onMounted, onUpdated } from "vue";
-import { ElMessage } from 'element-plus'
+import { inject } from "vue";
 import { Inertia } from '@inertiajs/inertia'
 const route = inject('appRoute');
 const props = defineProps({
-    errors: {
-        type: Object,
-        default: () => {
-            return {};
-        }
-    },
     record: {
-        type: Object,
-        default: () => {
-            return {};
-        }
-    },
-    records: {
-        type: Array,
-        default: () => {
-            return [];
-        }
-    },
-    searched: String,
-    success: String,
-    error: String,
-    flash: {
         type: Object,
         default: () => {
             return {};
@@ -38,64 +15,28 @@ const props = defineProps({
 
 const fields = {{createFields}};
 
-onMounted(() => {
-    handleNotifications();
-});
-
-onUpdated(() => {
-    handleNotifications();
-});
-
-function handleNotifications(){
-    if(props.success){
-        ElMessage({
-            showClose: true,
-            message: props.success,
-            type: 'success'
-        });
-    }
-    if(props.error){
-        ElMessage({
-            showClose: true,
-            message: props.error,
-            type: 'error'
-        });
-    }
-
-    if(props.flash && props.flash.message){
-        ElMessage({
-            showClose: true,
-            message: props.flash.message,
-        });
-    }
-}
-
-function create(){
-    Inertia.get(route('{{entityNamePluralLowerCase}}.create'));
-}
 </script>
 
 <template>
     <{{LayoutVar}} title="Create {{entityNamePluralUcFirst}}">
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{entityNamePluralUcFirst}}
-            </h2>
+            <div class="flex">
+                <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                    {{entityNamePluralUcFirst}}
+                </h2>
+                <div class="grow"></div>
+            </div>
         </template>
 
-        <div class="py-6">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
-                    <el-crud-form
-                        :index-route="'{{entityNamePluralLowerCase}}.index'"
-                        :add-route="'{{entityNamePluralLowerCase}}.store'"
-                        :update-route="'{{entityNamePluralLowerCase}}.update'"
-                        :errors="errors"
-                        :record="record"
-                        :fields="fields"
-                    ></el-crud-form>
-                </div>
-            </div>
+        <div class="pb-6">
+            <el-crud-form
+                :index-route="'{{entityNamePluralLowerCase}}.index'"
+                :add-route="'{{entityNamePluralLowerCase}}.store'"
+                :update-route="'{{entityNamePluralLowerCase}}.update'"
+                :errors="errors"
+                :record="record"
+                :fields="fields"
+            ></el-crud-form>
         </div>
     </{{LayoutVar}}>
 </template>
