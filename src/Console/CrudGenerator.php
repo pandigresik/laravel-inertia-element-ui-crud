@@ -58,37 +58,55 @@ class CrudGenerator extends Command
         return 0;
     }
 
-    protected function getFields(){
-        $modelNameArg = $this->argument('model');
-        $modelName = "App\Models\\$modelNameArg";
-        $model = new $modelName;
-        $columns = $model->getFillable();
+    protected function readColumnsFromTable($tableName) {
 
-        $allColumns = [];
-        foreach ($columns as $columnName){
-            if (in_array($columnName, ['id','created_at','updated_at'])){
-                continue;
-            }
-            $column = Schema::getConnection()->getDoctrineColumn($model->getTable(), $columnName);
-            $datatype = $column->getType()->getName();
-            $length = $column->getLength();
+        $indexes = collect(Schema::getIndexes($tableName));
+        return collect(Schema::getColumns($tableName))->map(function($column) use ($tableName, $indexes) {
+            $columnName = $column['name'];
+            $nullable = boolval($column['nullable']);
+            $defaultValue = $column['default'];
+            $length = str_replace(array( $column['type_name'], '(', ')' ), '', $column['type']);
+        
+
+            //Checked unique index
+            $columnUniqueIndexes = $indexes->filter(function($index) use ($columnName) {
+                $isUnique = boolval($index['unique']);
+                $isPrimary = boolval($index['primary']);
+                return in_array($columnName, $index['columns']) && ($isUnique && !$isPrimary);
+            });
+
+            $datatype = Schema::getColumnType($tableName, $columnName);
+            
+
             $type = 'text';
             if ($datatype == 'text'){
                 $type = 'textarea';
             } else if ($datatype == 'boolean'){
                 $type = 'switch';
+            } else if ( ($datatype == 'tinyint' && $length == 1) || ($datatype == 'tinyint' && $columnName == 'status') ){
+                $type = 'switch';
             }
-            $allColumns[] = [
+
+            return [
                 'name' => $columnName,
                 'datatype' => $datatype,
-                'required' => $column->getNotnull(),
+                'length' => $length,
+                'title' => Str::title(str_replace('_', ' ', $columnName)),
+                'required' => !$nullable,
                 'type' => $type,
-                'length' => $length
+                'unique' => $columnUniqueIndexes->count() > 0,
+                'defaultValue' => $defaultValue,
             ];
-        }
+        });
+    }
 
-        return $allColumns;
-//        $this->info(print_r($allColumns));exit();
+    protected function getFields(){
+        $modelNameArg = $this->argument('model');
+        $modelName = "App\Models\\$modelNameArg";
+        $model = new $modelName;
+        $tableName = $model->getTable();
+
+        return self::readColumnsFromTable($tableName)->jsonSerialize();
     }
 
     protected function getStub($type)
